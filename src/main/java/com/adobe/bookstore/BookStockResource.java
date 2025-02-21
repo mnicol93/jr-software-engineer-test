@@ -1,15 +1,16 @@
 package com.adobe.bookstore;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/books_stock/")
 public class BookStockResource {
+    private static final Logger LOGGER = LogManager.getLogger();
 
     private BookStockRepository bookStockRepository;
 
@@ -21,7 +22,10 @@ public class BookStockResource {
     @GetMapping("{bookId}")
     public ResponseEntity<BookStock> getStockById(@PathVariable String bookId) {
         return bookStockRepository.findById(bookId)
-                .map(bookStock -> ResponseEntity.ok(bookStock))
-                .orElse(ResponseEntity.notFound().build());
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> {
+                    LOGGER.error("Can't find order with orderId: " + bookId);
+                    return new OrderNotFoundException(bookId);
+                });
     }
 }
