@@ -1,5 +1,6 @@
 package com.adobe.bookstore.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import jakarta.persistence.Column;
@@ -10,6 +11,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "book_stock")
 @JsonSerialize
+@JsonDeserialize
 public class BookStock {
 
   @Id
