@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * {@link JpaRepository} to provide basic CRUD functionality and custom query methods.
  */
 @Repository
-public interface OrderRepository extends JpaRepository<Order, String> {
+public interface OrderRepository extends JpaRepository<Order, Long> {
 
 }

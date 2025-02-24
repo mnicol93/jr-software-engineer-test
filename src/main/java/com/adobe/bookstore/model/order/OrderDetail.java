@@ -1,10 +1,11 @@
 package com.adobe.bookstore.model.order;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.adobe.bookstore.model.order.constants.OrderDetailStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,7 +27,6 @@ import lombok.Setter;
 
 @Entity
 @Table(name = "order_detail")
-@JsonSerialize
 @Setter
 @Getter
 public class OrderDetail {
@@ -35,12 +35,15 @@ public class OrderDetail {
   @Column(name = "id", nullable = false)
   private String id;
 
-  @Column(name = "order_id", nullable = false)
-  private String orderId;
+  @Column(name = "order_id", nullable = true)
+  private UUID orderId;
 
   @Column(name = "book_id", nullable = false)
   private String bookId;
 
   @Column(name = "quantity", nullable = false)
   private Integer quantity;
+
+  @Column(name = "status", nullable = true)
+  private OrderDetailStatus status;
 }
