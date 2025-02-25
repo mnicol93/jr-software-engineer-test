@@ -1,5 +1,8 @@
 package com.adobe.bookstore.controller;
 
+import static com.adobe.bookstore.constants.Constants.V1;
+import static com.adobe.bookstore.constants.Constants.API_BASE;
+
 import com.adobe.bookstore.dto.StockUpdateDTO;
 import com.adobe.bookstore.model.BookStock;
 import com.adobe.bookstore.repository.BookStockRepository;
@@ -12,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
  * Controller for managing book stock in the bookstore.
  */
 @RestController
-@RequestMapping("/books_stock/")
+@RequestMapping(API_BASE + V1 + "books_stock/")
 public class BookStockResource {
 
   @Autowired

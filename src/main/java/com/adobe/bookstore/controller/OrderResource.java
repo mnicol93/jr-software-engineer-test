@@ -1,5 +1,8 @@
 package com.adobe.bookstore.controller;
 
+import static com.adobe.bookstore.constants.Constants.API_BASE;
+import static com.adobe.bookstore.constants.Constants.V1;
+
 import com.adobe.bookstore.dto.OrderRequestDTO;
 import com.adobe.bookstore.dto.OrderResponseDTO;
 import com.adobe.bookstore.model.order.Order;
@@ -18,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * retrieving and managing orders in the system.
  */
 @RestController
-@RequestMapping("/orders")
+@RequestMapping(API_BASE + V1 + "orders")
 public class OrderResource {
 
   @Autowired
