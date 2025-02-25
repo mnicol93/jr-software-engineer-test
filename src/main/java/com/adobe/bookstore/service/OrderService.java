@@ -92,7 +92,7 @@ public class OrderService {
           book.setQuantity(book.getQuantity() - orderDetail.getQuantity());
         }
       }
-    } catch (Error e) {
+    } catch (RuntimeException e) {
       LOGGER.error("Error {}", e);
     }
   }

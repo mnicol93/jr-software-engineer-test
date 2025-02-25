@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-// TODO: Add DTO
-
 /**
  * Controller class responsible for handling requests related to orders. Provides endpoints for
  * retrieving and managing orders in the system.
