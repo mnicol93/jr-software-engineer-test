@@ -8,6 +8,7 @@ import com.adobe.bookstore.model.order.OrderDetail;
 import com.adobe.bookstore.model.order.constants.OrderDetailStatus;
 import com.adobe.bookstore.model.order.constants.OrderStatus;
 import com.adobe.bookstore.repository.OrderRepository;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -80,6 +81,7 @@ public class OrderService {
    * @param orderDetails The details of the order to process.
    */
   @Async // Updating stock won't block the response
+  @Transactional
   public void updateStock(List<OrderDetail> orderDetails) {
     try {
       for (OrderDetail orderDetail : orderDetails) {

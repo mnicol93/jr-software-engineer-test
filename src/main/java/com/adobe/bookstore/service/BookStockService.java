@@ -25,7 +25,6 @@ public class BookStockService {
    * @param bookId     The ID of the book to update.
    * @param decreaseBy The quantity to decrease.
    */
-  @Transactional
   public ResponseEntity<Void> decreaseStock(String bookId, int decreaseBy) {
     if (decreaseBy > 0) {
       try {
