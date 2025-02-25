@@ -66,25 +66,25 @@ class BookStockResourceTest {
   void testUpdateStock_WhenBookExists_ReturnOk() {
     StockUpdateDTO stockUpdate = new StockUpdateDTO(10);
 
-    when(bookStockService.decreaseFromStock("testBook1", 10))
+    when(bookStockService.decreaseStock("testBook1", 10))
         .thenReturn(ResponseEntity.ok().build());
 
     ResponseEntity<Void> response = bookStockResource.updateStock("testBook1", stockUpdate);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    verify(bookStockService).decreaseFromStock("testBook1", 10);
+    verify(bookStockService).decreaseStock("testBook1", 10);
   }
 
   @Test
   void testUpdateStock_WhenBookDoesNotExist_ReturnNotFound() {
     StockUpdateDTO stockUpdate = new StockUpdateDTO(10);
 
-    when(bookStockService.decreaseFromStock("testBook1", 10))
+    when(bookStockService.decreaseStock("testBook1", 10))
         .thenReturn(ResponseEntity.notFound().build());
 
     ResponseEntity<Void> response = bookStockResource.updateStock("testBook1", stockUpdate);
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    verify(bookStockService).decreaseFromStock("testBook1", 10);
+    verify(bookStockService).decreaseStock("testBook1", 10);
   }
 }

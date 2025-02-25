@@ -35,28 +35,28 @@ class BookStockServiceTest {
   }
 
   @Test
-  void testUpdateStock_WhenBookExists_decreaseFromQuantity() {
+  void testDecreaseStock_WhenBookExists_decreaseFromQuantity() {
     when(bookStockRepository.findById("testBook1")).thenReturn(Optional.of(bookStock));
 
-    bookStockService.decreaseFromStock("testBook1", 10);
+    bookStockService.decreaseStock("testBook1", 10);
 
     assertEquals(90, bookStock.getQuantity());
     verify(bookStockRepository).save(bookStock);
   }
 
   @Test
-  void testUpdateStock_WhenZeroQtyChange_decreaseFromQuantity() {
+  void testDecreaseStock_WhenZeroQtyChange_decreaseFromQuantity() {
     assertEquals(
         ResponseEntity.badRequest().build(),
-        bookStockService.decreaseFromStock("testBook1", 0));
+        bookStockService.decreaseStock("testBook1", 0));
   }
 
   @Test
-  void testUpdateStock_WhenQtyExceedsStock_DoesNotSave() {
+  void testDecreaseStock_WhenQtyExceedsStock_DoesNotSave() {
 
     when(bookStockRepository.findById("testBook1")).thenReturn(Optional.of(bookStock));
 
-    ResponseEntity<Void> response = bookStockService.decreaseFromStock("testBook1", 150);
+    ResponseEntity<Void> response = bookStockService.decreaseStock("testBook1", 150);
 
     // Verify HTTP 422 (Unprocessable Entity) is returned
     assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());

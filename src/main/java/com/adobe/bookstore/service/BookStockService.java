@@ -20,24 +20,23 @@ public class BookStockService {
   private BookStockRepository bookStockRepository;
 
   /**
-   * Updates the stock of a specific book by adjusting its quantity.
+   * Updates the stock of a specific book by decreasing its quantity.
    *
-   * @param bookId    The ID of the book to update.
-   * @param qtyChange The quantity change to apply.
+   * @param bookId     The ID of the book to update.
+   * @param decreaseBy The quantity to decrease.
    */
   @Transactional
-  public ResponseEntity<Void> decreaseFromStock(String bookId, int qtyChange) {
-
-    if (qtyChange > 0) {
+  public ResponseEntity<Void> decreaseStock(String bookId, int decreaseBy) {
+    if (decreaseBy > 0) {
       try {
         BookStock book = bookStockRepository.findById(bookId)
             .orElseThrow(() -> new RuntimeException(bookId));
 
-        if (book.getQuantity() < qtyChange) {
+        if (book.getQuantity() < decreaseBy) {
           LOGGER.error("Insufficient stock for book {}", bookId);
           return ResponseEntity.unprocessableEntity().build(); // HTTP 422
         }
-        book.setQuantity(book.getQuantity() - qtyChange);
+        book.setQuantity(book.getQuantity() - decreaseBy);
         bookStockRepository.save(book);
         return ResponseEntity.ok().build();
 

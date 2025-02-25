@@ -79,14 +79,14 @@ public class OrderService {
    *
    * @param orderDetails The details of the order to process.
    */
-  @Async          // Updating stock won't block the response
+  @Async // Updating stock won't block the response
   public void updateStock(List<OrderDetail> orderDetails) {
     try {
       for (OrderDetail orderDetail : orderDetails) {
         BookStock book = bookStockService.getStockById(orderDetail.getBookId()).getBody();
 
         if (book != null) {
-          bookStockService.decreaseFromStock(orderDetail.getBookId(), orderDetail.getQuantity());
+          bookStockService.decreaseStock(orderDetail.getBookId(), orderDetail.getQuantity());
         }
       }
     } catch (RuntimeException e) {

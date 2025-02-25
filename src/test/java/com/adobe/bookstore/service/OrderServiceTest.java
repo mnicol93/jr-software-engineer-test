@@ -88,7 +88,7 @@ class OrderServiceTest {
 
     assertEquals(OrderDetailStatus.Not_Enough_Stock, detail.getStatus());
     assertEquals(OrderStatus.Rejected, order.getOrderStatus());
-    verify(bookStockService, never()).decreaseFromStock(any(), anyInt());
+    verify(bookStockService, never()).decreaseStock(any(), anyInt());
   }
 
   @Test
@@ -106,7 +106,7 @@ class OrderServiceTest {
         .thenReturn(ResponseEntity.ok(validBookStock));
 
     // Simulate stock update in the mock
-    when(bookStockService.decreaseFromStock(eq("testBook"), anyInt()))
+    when(bookStockService.decreaseStock(eq("testBook"), anyInt()))
         .thenAnswer(invocation -> {
           int qtyChange = invocation.getArgument(1);
           validBookStock.setQuantity(validBookStock.getQuantity() - qtyChange);
