@@ -1,6 +1,5 @@
 package com.adobe.bookstore.service;
 
-import com.adobe.bookstore.controller.BookStockResource;
 import com.adobe.bookstore.dto.OrderRequestDTO;
 import com.adobe.bookstore.dto.OrderResponseDTO;
 import com.adobe.bookstore.model.BookStock;
@@ -9,7 +8,6 @@ import com.adobe.bookstore.model.order.OrderDetail;
 import com.adobe.bookstore.model.order.constants.OrderDetailStatus;
 import com.adobe.bookstore.model.order.constants.OrderStatus;
 import com.adobe.bookstore.repository.OrderRepository;
-import jakarta.transaction.Transactional;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +27,7 @@ public class OrderService {
   @Autowired
   private OrderRepository orderRepository;
   @Autowired
-  private BookStockResource bookStockResource;
+  private BookStockService bookStockService;
 
   /**
    * Fetches all orders from the repository.
@@ -54,7 +52,7 @@ public class OrderService {
     for (OrderDetail orderDetail : orderDetails) {
       OrderDetailStatus validatedOrder = validateStock(
           orderDetail,
-          bookStockResource.getStockById(orderDetail.getBookId()).getBody());
+          bookStockService.getStockById(orderDetail.getBookId()).getBody());
 
       if (validatedOrder != OrderDetailStatus.In_Stock) {
         order.setOrderStatus(OrderStatus.Rejected);
@@ -82,14 +80,13 @@ public class OrderService {
    * @param orderDetails The details of the order to process.
    */
   @Async          // Updating stock won't block the response
-  @Transactional //  Ensure if updating stock fails no error will cause, just rollback
   public void updateStock(List<OrderDetail> orderDetails) {
     try {
       for (OrderDetail orderDetail : orderDetails) {
-        BookStock book = bookStockResource.getStockById(orderDetail.getBookId()).getBody();
+        BookStock book = bookStockService.getStockById(orderDetail.getBookId()).getBody();
 
         if (book != null) {
-          book.setQuantity(book.getQuantity() - orderDetail.getQuantity());
+          bookStockService.decreaseFromStock(orderDetail.getBookId(), orderDetail.getQuantity());
         }
       }
     } catch (RuntimeException e) {
@@ -101,6 +98,8 @@ public class OrderService {
     if (book == null) {
       LOGGER.error("Book {} not found. Order is discarded", orderDetail.getBookId());
       return OrderDetailStatus.No_Stock;
+    } else if (orderDetail.getQuantity() < 1) {
+      return OrderDetailStatus.Invalid_Amount_Requested;
     } else if (book.getQuantity() - orderDetail.getQuantity() >= 0) {
       return OrderDetailStatus.In_Stock;
     } else {

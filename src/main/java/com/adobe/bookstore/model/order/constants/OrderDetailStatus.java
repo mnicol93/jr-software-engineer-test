@@ -6,5 +6,6 @@ package com.adobe.bookstore.model.order.constants;
 public enum OrderDetailStatus {
   In_Stock,
   Not_Enough_Stock,
-  No_Stock
+  No_Stock,
+  Invalid_Amount_Requested
 }

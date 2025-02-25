@@ -9,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Optional;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -28,58 +30,40 @@ class BookStockServiceTest {
     MockitoAnnotations.openMocks(this);
 
     bookStock = new BookStock();
-    bookStock.setId("book-1");
+    bookStock.setId("testBook1");
     bookStock.setQuantity(100);
   }
 
   @Test
-  void testUpdateStock_WhenBookExists_UpdateQuantity() {
-    when(bookStockRepository.findById("book-1")).thenReturn(Optional.of(bookStock));
+  void testUpdateStock_WhenBookExists_decreaseFromQuantity() {
+    when(bookStockRepository.findById("testBook1")).thenReturn(Optional.of(bookStock));
 
-    bookStockService.updateStock("book-1", -10);
+    bookStockService.decreaseFromStock("testBook1", 10);
 
     assertEquals(90, bookStock.getQuantity());
     verify(bookStockRepository).save(bookStock);
   }
 
   @Test
-  void testUpdateStock_WhenBookNotFound_ThrowException() {
-    when(bookStockRepository.findById("book-1")).thenReturn(Optional.empty());
+  void testUpdateStock_WhenZeroQtyChange_decreaseFromQuantity() {
+    assertEquals(
+        ResponseEntity.badRequest().build(),
+        bookStockService.decreaseFromStock("testBook1", 0));
+  }
 
-    assertThrows(RuntimeException.class,
-        () -> bookStockService.updateStock("book-1", 10),
-        "Book not found"
-    );
+  @Test
+  void testUpdateStock_WhenQtyExceedsStock_DoesNotSave() {
+
+    when(bookStockRepository.findById("testBook1")).thenReturn(Optional.of(bookStock));
+
+    ResponseEntity<Void> response = bookStockService.decreaseFromStock("testBook1", 150);
+
+    // Verify HTTP 422 (Unprocessable Entity) is returned
+    assertEquals(HttpStatus.UNPROCESSABLE_ENTITY, response.getStatusCode());
+    // Verify stock quantity remains unchanged
+    assertEquals(100, bookStock.getQuantity());
+    // Verify save() was NOT called
     verify(bookStockRepository, never()).save(any());
   }
 
-  @Test
-  void testUpdateStock_WhenZeroQtyChange_UpdateQuantity() {
-    when(bookStockRepository.findById("book-1")).thenReturn(Optional.of(bookStock));
-
-    bookStockService.updateStock("book-1", 0);
-
-    assertEquals(100, bookStock.getQuantity());
-    verify(bookStockRepository).save(bookStock);
-  }
-
-  @Test
-  void testUpdateStock_WhenPositiveQtyChange_UpdateQuantity() {
-    when(bookStockRepository.findById("book-1")).thenReturn(Optional.of(bookStock));
-
-    bookStockService.updateStock("book-1", 50);
-
-    assertEquals(150, bookStock.getQuantity());
-    verify(bookStockRepository).save(bookStock);
-  }
-
-  @Test
-  void testUpdateStock_WhenNegativeQtyExceedsStock_UpdateQuantity() {
-    when(bookStockRepository.findById("book-1")).thenReturn(Optional.of(bookStock));
-
-    bookStockService.updateStock("book-1", -150);
-
-    assertEquals(-50, bookStock.getQuantity());
-    verify(bookStockRepository).save(bookStock);
-  }
 }

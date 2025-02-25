@@ -14,9 +14,9 @@ public class StockUpdateDTO {
   /**
    * Constructs a StockUpdateDTO.
    *
-   * @param quantity The quantity to update the stock by.
+   * @param updateQuantity The quantity to update the stock by.
    */
-  public StockUpdateDTO(@JsonProperty("quantity") final int quantity) {
-    this.updateQuantity = quantity;
+  public StockUpdateDTO(@JsonProperty("quantity") final int updateQuantity) {
+    this.updateQuantity = updateQuantity;
   }
 }

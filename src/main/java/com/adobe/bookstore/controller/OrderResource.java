@@ -5,8 +5,6 @@ import com.adobe.bookstore.dto.OrderResponseDTO;
 import com.adobe.bookstore.model.order.Order;
 import com.adobe.bookstore.service.OrderService;
 import java.util.List;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/orders")
 public class OrderResource {
 
-  private static final Logger LOGGER = LogManager.getLogger();
-
   @Autowired
   private OrderService orderService;
 
@@ -35,7 +31,6 @@ public class OrderResource {
    */
   @GetMapping
   public ResponseEntity<List<Order>> getAllOrders() {
-    LOGGER.info("Fetching all orders from DB");
     return ResponseEntity.ok(orderService.getOrders());
   }
 
@@ -47,8 +42,6 @@ public class OrderResource {
    */
   @PostMapping
   public ResponseEntity<OrderResponseDTO> saveOrder(@RequestBody OrderRequestDTO orderRequest) {
-    OrderResponseDTO savedOrder = orderService.createOrder(orderRequest);
-    LOGGER.info(orderService);
-    return ResponseEntity.ok(savedOrder);
+    return ResponseEntity.ok(orderService.createOrder(orderRequest));
   }
 }
