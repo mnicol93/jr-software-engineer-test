@@ -38,7 +38,7 @@ public class BookStockResource {
    * @param stockUpdate The stock update details.
    * @return A response indicating the result of the update.
    */
-  @PatchMapping("{bookId}/update")
+  @PatchMapping("{bookId}")
   public ResponseEntity<Void> updateStock(@PathVariable String bookId,
       StockUpdateDTO stockUpdate) {
     return bookStockService.decreaseFromStock(bookId, stockUpdate.getUpdateQuantity());
